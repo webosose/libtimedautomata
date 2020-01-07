@@ -1,4 +1,4 @@
-// Copyright (c) 2019 LG Electronics, Inc.
+// Copyright (c) 2019-2020 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,12 @@ template<typename Input>
 void Discriminator<Input>::addInitState(State<Input>* state) {
     // Environment variables are reused on the whole life
     // cycle of the state chains.
-    state->setEnvVar((env[state] = new DFAEnv()));
+    auto envVar = state->getEnvVar();
+    if (!envVar) {
+        state->setEnvVar((env[state] = new DFAEnv()));
+    } else { // User can set their Environemnt variable
+        env[state] = envVar;
+    }
     state->setOutput(&outputList);
     m_initialStates.push_back(state);
 }
