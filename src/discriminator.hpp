@@ -33,13 +33,6 @@ inline void deleter(T val, IterStart start, IterEnd end) {
 template<typename Input>
 Discriminator<Input>::~Discriminator()
 {
-    __running = false;
-    inputList.exit();
-    m_outputGenerator->exit();
-
-    m_processThread->join();
-    m_outputGeneratorThread->join();
-
     delete m_processThread;
     delete m_outputGeneratorThread;
 
@@ -54,9 +47,21 @@ Discriminator<Input>::~Discriminator()
 template<typename Input>
 void Discriminator<Input>::init()
 {
+    __running = true;
     m_outputGenerator = new OutputGenerator<Input>(outputList);
     m_processThread = new std::thread(&Discriminator<Input>::process, this);
     m_outputGeneratorThread = new std::thread(&OutputGenerator<Input>::run, m_outputGenerator);
+}
+
+template<typename Input>
+void Discriminator<Input>::finalize()
+{
+    __running = false;
+    inputList.exit();
+    m_outputGenerator->exit();
+
+    m_processThread->join();
+    m_outputGeneratorThread->join();
 }
 
 template<typename Input>

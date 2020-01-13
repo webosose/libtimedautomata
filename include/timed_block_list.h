@@ -1,4 +1,4 @@
-// Copyright (c) 2019 LG Electronics, Inc.
+// Copyright (c) 2019-2020 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,6 @@ public:
     // TODO: need to reset iter.begin() position.
     // If we can redefine begin() position, we can remove currentLoc.
     void reset() { updated = false; }
-    int32_t maxReadLength() { return maxLoc; }
     void exit() { shouldExit_= true; condVar_.notify_one(); }
     void push_back(const T& val)
     {
@@ -76,6 +75,7 @@ public:
     std::pair<typename std::list<T>::iterator, typename std::list<T>::iterator>
             getConsumedPart()
     {
+        lock l(mutex_);
         auto iTer = list_.begin(); // TODO: make iTer a member variable
         advance(iTer, maxLoc);
 

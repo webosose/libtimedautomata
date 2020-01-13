@@ -1,4 +1,4 @@
-// Copyright (c) 2019 LG Electronics, Inc.
+// Copyright (c) 2019-2020 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,12 +31,15 @@
 #include <timedautomata/timed_block_list.h>
 #include <timedautomata/output_generator.h>
 
+// Discrimiantor starts with init() and stops with finalize().
+// User should delete this only after call finalize().
 template<typename Input>
 class Discriminator {
 public:
     virtual ~Discriminator();
 
     void init();
+    void finalize();
     void addInitState(State<Input>* state);
     void process();
 
@@ -52,7 +55,7 @@ public:
     TimedBlockList<std::pair<Input, std::chrono::milliseconds>>& getOutput() { return outputList; }
 
 protected:
-    State<Input>* m_currentState;
+    State<Input>* m_currentState = nullptr;
     std::list<State<Input>*> m_initialStates;
 
     std::optional<std::chrono::time_point<std::chrono::steady_clock>> m_lastInputTime;
