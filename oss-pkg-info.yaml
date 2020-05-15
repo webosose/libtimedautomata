@@ -1,0 +1,5 @@
+Open Source Software Package:
+- name: webOSOSE-libtimedautomata
+  version: 0.0.1
+  source: https://github.com/webosose/libtimedautomata
+  license: Apache-2.0
